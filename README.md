@@ -15,7 +15,7 @@ The directories are structured as follows:
 
 To train the model run the following:
 
-`python train.py -c ./configs/config.json`
+`python train_med2vec.py -c ./configs/config.json`
 
 **note:** make sure the directories are set appropiatly in `./configs/config.json`. 
 
