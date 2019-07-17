@@ -13,7 +13,7 @@ def med2vec_loss(inputs, mask, probits, bce_loss, emb_w, ivec, jvec, window=1, e
             if (i == 0):
                 maski = mask[i + 1:] * mask[:-i - 1]
             else:
-                maski = mask[i + 1:] * mask[i:-i] * mask[:-i - 1]
+                maski = mask[i + 1:] * mask[1:-i] * mask[:-i - 1]
             backward_preds = probits[i+1:] * maski
             forward_preds = probits[:-i-1] * maski
             loss += bce_loss(forward_preds, x[i+1:].float()) + bce_loss(backward_preds, x[:-i-1].float())
