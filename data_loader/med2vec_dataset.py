@@ -11,14 +11,11 @@ import numpy as np
 
 class Med2VecDataset(data.Dataset):
 
-    def __init__(self, root, num_codes, train=True, med=False,  diag=False,proc=False, transform=None, target_transform=None, download=False):
+    def __init__(self, root, num_codes, train=True, transform=None, target_transform=None, download=False):
         self.root = os.path.expanduser(root)
         self.transform = transform
         self.target_transform = target_transform
         self.train = train
-        self.proc = proc
-        self.med = med
-        self.diag = diag
         self.num_codes = num_codes
         if download:
             raise ValueError('cannot download')
@@ -32,17 +29,8 @@ class Med2VecDataset(data.Dataset):
         else:
             return len(self.test_data)
 
-    def convert_to_med2vec_data(self, data):
-        data = []
-        for k, vv in self.train_data.items():
-            for v in vv:
-                di = {k:v[k] for k in ['diagnoses', 'procedures', 'medications', 'demographics', 'cptproc']}
-                data.append(di)
-            data.append(-1)
-        return data
-
     def __getitem__(self, index):
-        x, ivec, jvec, d = self.preprocess1(self.train_data[index])
+        x, ivec, jvec, d = self.preprocess(self.train_data[index])
         return x, ivec, jvec, d
 
     def preprocess(self, seq):
@@ -67,36 +55,6 @@ class Med2VecDataset(data.Dataset):
         x[seq] = 1
         for i in seq:
             for j in seq:
-                if i == j:
-                    continue
-                ivec.append(i)
-                jvec.append(j)
-        return x, torch.LongTensor(ivec), torch.LongTensor(jvec), d
-
-    def preprocess(self, seq):
-        """ create one hot vector of idx in seq, with length self.num_codes
-
-            Args:
-                seq: list of ideces where code should be 1
-
-            Returns:
-                x: one hot vector
-                ivec: vector for learning code representation
-                jvec: vector for learning code representation
-        """
-        x = torch.zeros((self.num_codes, ), dtype=torch.long)
-
-        ivec = []
-        jvec = []
-        d = torch.zeros((self.demographics_len, ))
-        if seq == -1:
-            return x, torch.LongTensor(ivec), torch.LongTensor(jvec), d
-
-        codes = seq['diagnoses'] + seq['procedures'] + seq['medications'] + seq['cptproc']
-        x[codes] = 1
-        d = torch.Tensor(seq['demographics'])
-        for i in codes:
-            for j in codes:
                 if i == j:
                     continue
                 ivec.append(i)
