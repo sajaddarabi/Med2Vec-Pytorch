@@ -4,13 +4,13 @@ This is a re-implementation of Med2Vec [1] in Pytorch. It simply embeds clinical
 
 To run the code first obtain the `ADMISSION.CSV` and `DIAGNOSES_ICD.CSV` from MIMIC-III database [here](https://mimic.physionet.org/).
 
-Compile the code by running `bash gen_data.sh` make sure you set the correct paths to the files.
+Compile the data by running `bash gen_data.sh` make sure you set the correct paths to the files.
 
 The directories are structured as follows:
 - `./base`: base trainer, data loader.
 - `./configs`: json files for experiments. This where you pass in arguments to the model/trainer and what have you.
 - `./trainer`: contains training logic, and anything that must be done to train the model.
-- `./model`: directory containing the med2vec moel.
+- `./model`: directory containing the med2vec model.
 
 
 To train the model run the following:
